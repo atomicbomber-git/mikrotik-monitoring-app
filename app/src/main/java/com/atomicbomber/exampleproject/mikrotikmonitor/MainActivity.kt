@@ -99,8 +99,20 @@ class NetworkInterfaceListAdapter(private val dataset: List<NetworkInterface>) :
         holder.itemView.apply {
             interface_id.text = networkInterface.id
             name.text = networkInterface.name
-            disabled.text = if (networkInterface.disabled === "False") "False" else "True"
-            button_toggle_disabled.text = if (networkInterface.disabled === "False") "Disable" else "Enable"
+
+
+            disabled.apply {
+                text = if (networkInterface.disabled == "false") "False" else "True"
+                setTextColor(
+                    if (networkInterface.disabled == "true")
+                        resources.getColor(R.color.colorPrimary)
+                    else
+                        resources.getColor(R.color.colorAccent)
+                )
+            }
+
+            button_toggle_disabled.text = if (networkInterface.disabled == "false") "Disable" else "Enable"
+//            button_toggle_disabled.setBackgroundColor(resources.getColor(R.color.colorAccent))
         }
     }
 
