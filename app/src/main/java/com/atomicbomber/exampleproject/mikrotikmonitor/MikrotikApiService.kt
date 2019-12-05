@@ -2,6 +2,7 @@ package com.atomicbomber.exampleproject.mikrotikmonitor
 
 import retrofit2.Call
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 data class NetworkInterface(
@@ -37,4 +38,10 @@ data class NetworkInterface(
 interface MikrotikApiService {
     @GET("/api/router_interface/{routerId}/index")
     fun getNetworkInterfaces(@Path("routerId")  routerId: Int): Call<List<NetworkInterface>>
+
+    @POST("/api/router_interface/{routerId}/toggle/{networkInterfaceId}")
+    fun toggleNetworkInterface(
+        @Path("routerId")  routerId: Int,
+        @Path("networkInterfaceId")  networkInterfaceId: String
+    ): Call<String>
 }
