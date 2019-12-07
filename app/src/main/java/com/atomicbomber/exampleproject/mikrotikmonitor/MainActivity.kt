@@ -1,6 +1,7 @@
 package com.atomicbomber.exampleproject.mikrotikmonitor
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
