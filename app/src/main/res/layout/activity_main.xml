@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+        android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android"
->
-    <android.support.v7.widget.RecyclerView
-            android:id="@+id/interfaceIndexRecyclerView"
+        >
+
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/main_activity_tab_layout"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/main_activity_view_pager"
             android:layout_height="match_parent"
-    >
-    </android.support.v7.widget.RecyclerView>
+            android:layout_width="match_parent"
+            >
+
+    </androidx.viewpager2.widget.ViewPager2>
 </LinearLayout>
