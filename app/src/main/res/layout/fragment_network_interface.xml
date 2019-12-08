@@ -4,7 +4,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/interfaceIndexRecyclerView"
+            android:id="@+id/interface_index_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >

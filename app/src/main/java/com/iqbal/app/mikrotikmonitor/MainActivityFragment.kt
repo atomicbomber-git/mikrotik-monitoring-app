@@ -1,5 +1,6 @@
-package com.atomicbomber.exampleproject.mikrotikmonitor
+package com.iqbal.app.mikrotikmonitor
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import kotlinx.android.synthetic.main.fragment_settings.view.*
+import kotlin.Exception
 
 enum class Feature {
     NETWORK_INTERFACES {
@@ -22,7 +25,8 @@ enum class Feature {
     SETTINGS {
         override fun tabName() = "Settings"
         override fun fragment() = SettingsFragment()
-    };
+    },
+    ;
 
     abstract fun tabName(): String;
     abstract fun fragment(): AppFragment;
@@ -48,20 +52,6 @@ abstract class AppFragment(): Fragment() {
     abstract fun getLayout(): Int
 }
 
-class NetworkInterfacesFragment: AppFragment() {
-    override fun getLayout(): Int {
-        return R.layout.fragment_network_interface
-    }
-}
-
 class LogsFragment: AppFragment() {
-    override fun getLayout(): Int {
-        return R.layout.fragment_log
-    }
-}
-
-class SettingsFragment: AppFragment() {
-    override fun getLayout(): Int {
-        return R.layout.fragment_settings
-    }
+    override fun getLayout() = R.layout.fragment_log
 }

@@ -1,4 +1,4 @@
-package com.atomicbomber.exampleproject.mikrotikmonitor
+package com.iqbal.app.mikrotikmonitor
 
 import org.junit.Test
 

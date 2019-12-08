@@ -1,4 +1,4 @@
-package com.atomicbomber.exampleproject.mikrotikmonitor
+package com.iqbal.app.mikrotikmonitor
 
 class Config {
     companion object {

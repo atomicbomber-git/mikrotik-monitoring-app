@@ -1,4 +1,4 @@
-package com.atomicbomber.exampleproject.mikrotikmonitor
+package com.iqbal.app.mikrotikmonitor
 
 import retrofit2.Call
 import retrofit2.http.GET

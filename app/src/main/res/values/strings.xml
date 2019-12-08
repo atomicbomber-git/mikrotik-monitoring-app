@@ -3,4 +3,9 @@
 
     <string name="action_disable"> Disable </string>
     <string name="action_enable"> Enable </string>
+
+
+    <string name="text_settings_feature_name"> Settings </string>
+    <string name="hint_edit_server_address"> Server Address </string>
+    <string name="button_save_settings"> Save Settings </string>
 </resources>

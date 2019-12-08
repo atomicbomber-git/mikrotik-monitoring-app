@@ -7,7 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.atomicbomber.exampleproject.mikrotikmonitor"
+        applicationId "com.iqbal.app.mikrotikmonitor"
         minSdkVersion 23
         targetSdkVersion 28
         versionCode 1
