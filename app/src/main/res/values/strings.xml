@@ -13,4 +13,9 @@
 
     <string name="action_save_settings_success"> Saving Successful </string>
     <string name="action_save_settings_fail"> Saving Failed</string>
+
+    <string name="primary_shared_preference_id"> PRIMARY_SHARED_PREFERENCE </string>
+    <string name="server_address_preference_key"> SERVER_ADDRESS </string>
+
+    <string name="server_address_preference_default_val"> http://localhost:8000 </string>
 </resources>
