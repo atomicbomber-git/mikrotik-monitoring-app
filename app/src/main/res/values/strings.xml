@@ -1,11 +1,16 @@
 <resources>
-    <string name="app_name">Mikrotik Monitor</string>
+    <string name="app_name"> MikroTik Monitor </string>
 
     <string name="action_disable"> Disable </string>
     <string name="action_enable"> Enable </string>
 
-
     <string name="text_settings_feature_name"> Settings </string>
+    <string name="text_network_interfaces_feature_name"> Network Interfaces </string>
+    <string name="text_logs_feature_name"> Logs </string>
+
     <string name="hint_edit_server_address"> Server Address </string>
     <string name="button_save_settings"> Save Settings </string>
+
+    <string name="action_save_settings_success"> Saving Successful </string>
+    <string name="action_save_settings_fail"> Saving Failed</string>
 </resources>
