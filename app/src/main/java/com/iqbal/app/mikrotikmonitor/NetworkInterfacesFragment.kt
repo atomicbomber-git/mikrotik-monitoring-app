@@ -1,9 +1,11 @@
 package com.iqbal.app.mikrotikmonitor
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_network_interface.*
@@ -17,8 +19,16 @@ class NetworkInterfacesFragment: AppFragment() {
     val networkInterfaceList = ArrayList<NetworkInterface>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        this.interface_index_swipe_refresh_layout.setOnRefreshListener {
+            loadData()
+        }
+
         setUpInterfaceRecyclerView()
         loadData()
+    }
+
+    private fun loadDataFinished() {
+        interface_index_swipe_refresh_layout.isRefreshing = false
     }
 
     private fun setUpInterfaceRecyclerView() {
@@ -29,16 +39,28 @@ class NetworkInterfacesFragment: AppFragment() {
     }
 
     private fun loadData() {
+        networkInterfaceList.clear()
+
         HttpService.instance.getNetworkInterfaces(Config.PRIMARY_ROUTER_ID)
             .enqueue(object : Callback<List<NetworkInterface>> {
                 override fun onFailure(call: Call<List<NetworkInterface>>, t: Throwable) {
+                    loadDataFinished()
+                    Toast.makeText(context, t.message, Toast.LENGTH_LONG)
+                        .show()
                 }
 
                 override fun onResponse(
                     call: Call<List<NetworkInterface>>,
                     response: Response<List<NetworkInterface>>
                 ) {
-                    response.body()?.apply {
+                    loadDataFinished()
+                    if (response.code() != 200 && response.body() === null) {
+                        Toast.makeText(context, response.message(), Toast.LENGTH_LONG)
+                            .show()
+                        return
+                    }
+
+                    response.body().apply {
                         networkInterfaceList
                             .addAll(this as ArrayList<NetworkInterface>)
                         interface_index_recycler_view.adapter?.notifyDataSetChanged()
