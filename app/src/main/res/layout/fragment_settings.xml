@@ -9,11 +9,10 @@
         >
 
     <TextView
-            android:textSize="16pt"
-            android:text="@string/text_settings_feature_name"
+            android:textSize="12pt"
+            android:text="@string/text_settings_server_url_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
     </TextView>
 
     <EditText

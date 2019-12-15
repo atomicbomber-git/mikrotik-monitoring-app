@@ -5,7 +5,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
 
 class ContextProvider : ContentProvider() {
     companion object {
@@ -15,7 +14,6 @@ class ContextProvider : ContentProvider() {
     override fun onCreate(): Boolean {
         context?.let {
             Common.setContext(it)
-            Log.d(TAG,"Context has been provided.")
             return true
         }
 
@@ -45,9 +43,6 @@ class ContextProvider : ContentProvider() {
 }
 
 object Common {
-    /**
-     * App appContext
-     */
     @Volatile
     lateinit var appContext: Context
 

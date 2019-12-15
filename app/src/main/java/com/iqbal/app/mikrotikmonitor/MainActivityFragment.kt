@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import kotlinx.android.synthetic.main.fragment_settings.view.*
-import kotlin.Exception
 
 enum class Feature {
     NETWORK_INTERFACES {
@@ -20,6 +18,11 @@ enum class Feature {
     LOGS {
         override fun tabName() = "Logs"
         override fun fragment() = LogsFragment()
+    },
+
+    HOTSPOT {
+        override fun tabName() = "Wireless"
+        override fun fragment() = SettingsFragment()
     },
 
     SETTINGS {
@@ -34,10 +37,7 @@ enum class Feature {
 
 class MainActivityFragmentAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
     override fun getItemCount(): Int = Feature.values().size
-
-    override fun createFragment(position: Int): Fragment {
-        return Feature.values()[position].fragment()
-    }
+    override fun createFragment(position: Int) = Feature.values()[position].fragment()
 }
 
 abstract class AppFragment(): Fragment() {
@@ -45,13 +45,8 @@ abstract class AppFragment(): Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(getLayout(), container, false)
-    }
+    ): View? = inflater.inflate(getLayout(), container, false)
 
     abstract fun getLayout(): Int
 }
 
-class LogsFragment: AppFragment() {
-    override fun getLayout() = R.layout.fragment_log
-}

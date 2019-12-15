@@ -5,6 +5,13 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
+data class Log(
+    val id: String = "",
+    val time: String = "",
+    val topics: String = "",
+    val message: String = ""
+)
+
 data class NetworkInterface(
     val id: String = "",
     val name: String = "",
@@ -31,17 +38,53 @@ data class NetworkInterface(
     val running: String = "",
     val disabled: String = "",
     val comment: String = ""
-) {
+)
 
-}
+data class ConnectedClient (
+    val id: String = "",
+    val network_interface: String = "",
+    val mac_address: String = "",
+    val ap: String = "",
+    val wds: String = "",
+    val bridge: String = "",
+    val rx_rate: String = "",
+    val tx_rate: String = "",
+    val packets: String = "",
+    val bytes: String = "",
+    val frames: String = "",
+    val frame_bytes: String = "",
+    val hw_frames: String = "",
+    val hw_frame_bytes: String = "",
+    val tx_frames_timed_out: String = "",
+    val uptime: String = "",
+    val last_activity: String = "",
+    val signal_strength: String = "",
+    val signal_to_noise: String = "",
+    val signal_strength_ch0: String = "",
+    val signal_strength_ch1: String = "",
+    val strength_at_rates: String = "",
+    val tx_ccq: String = "",
+    val p_throughput: String = "",
+    val last_ip: String = "",
+    val _8021x_port_enabled: String = "",
+    val management_protection: String = "",
+    val wmm_enabled: String = "",
+    val tx_rate_set: String = ""
+)
 
 interface MikrotikApiService {
-    @GET("/api/router_interface/{routerId}/index")
+    @GET("/api/router/{routerId}/interface/index")
     fun getNetworkInterfaces(@Path("routerId")  routerId: Int): Call<List<NetworkInterface>>
 
-    @POST("/api/router_interface/{routerId}/toggle/{networkInterfaceId}")
+    @GET("/api/router/{routerId}/log/index")
+    fun getLogs(@Path("routerId")  routerId: Int): Call<List<Log>>
+
+    @POST("/api/router/{routerId}/toggle/{networkInterfaceId}")
     fun toggleNetworkInterface(
         @Path("routerId")  routerId: Int,
         @Path("networkInterfaceId")  networkInterfaceId: String
     ): Call<String>
+
+    @GET("/api/router/{routerId}/wireless/registration_table/index")
+    fun getConnectedClients(@Path("routerId")  routerId: Int): Call<List<ConnectedClient>>
 }
