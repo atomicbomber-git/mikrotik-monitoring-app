@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.connected_client_item.view.*
 import kotlinx.android.synthetic.main.fragment_connected_clients.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -14,7 +15,7 @@ import retrofit2.Response
 class ConnectedClientsFragment: AppFragment() {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
     private val connectedClientList: ArrayList<ConnectedClient> = ArrayList()
-    private val adapter: LogsFragment.LogListAdapter = LogsFragment.LogListAdapter(connectedClientList)
+    private val adapter: ConnectedClientListAdapter = ConnectedClientListAdapter(connectedClientList)
 
     override fun getLayout() = R.layout.fragment_connected_clients
 
@@ -22,28 +23,43 @@ class ConnectedClientsFragment: AppFragment() {
         connected_client_index_swipe_refresh_layout.setOnRefreshListener {
             this.loadData()
         }
+
+        connected_client_index_recycler_view.let {recyclerView ->
+            recyclerView.layoutManager = layoutManager
+            recyclerView.adapter = adapter
+        }
+
+        loadData()
     }
 
     private fun loadData() {
         HttpService.instance.getConnectedClients(Config.PRIMARY_ROUTER_ID)
             .enqueue(object: Callback<List<ConnectedClient>> {
                 override fun onFailure(call: Call<List<ConnectedClient>>, t: Throwable) {
+                    onLoadingFinished()
                 }
 
                 override fun onResponse(
                     call: Call<List<ConnectedClient>>,
                     response: Response<List<ConnectedClient>>
                 ) {
+                    onLoadingFinished()
+
+                    response.body()?.run {
+                        connectedClientList.clear()
+                        connectedClientList.addAll(this)
+                        adapter.notifyDataSetChanged()
+                    }
                 }
             })
     }
 
     private fun onLoadingFinished() {
-
+        connected_client_index_swipe_refresh_layout.isRefreshing = false
     }
 
     class ConnectedClientListAdapter(private val connectedClients: ArrayList<ConnectedClient>):
-            RecyclerView.Adapter<ConnectedClientListAdapter.ViewHolder>() {
+        RecyclerView.Adapter<ConnectedClientListAdapter.ViewHolder>() {
 
         class ViewHolder(val view: View): RecyclerView.ViewHolder(view)
 
@@ -54,8 +70,13 @@ class ConnectedClientsFragment: AppFragment() {
         override fun getItemCount(): Int = this.connectedClients.size
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.view.apply {
-                /
+            viewHolder.view.let { view ->
+                connectedClients[position].let { connectedClient ->
+                    view.client_id.text = connectedClient.id
+                    view.network_interface.text = connectedClient.network_interface
+                    view.mac_address.text = connectedClient.mac_address
+                    view.access_point.text = connectedClient.ap
+                }
             }
         }
     }

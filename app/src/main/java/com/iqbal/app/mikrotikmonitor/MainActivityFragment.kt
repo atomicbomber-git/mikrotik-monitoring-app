@@ -22,7 +22,7 @@ enum class Feature {
 
     HOTSPOT {
         override fun tabName() = "Wireless"
-        override fun fragment() = SettingsFragment()
+        override fun fragment() = ConnectedClientsFragment()
     },
 
     SETTINGS {

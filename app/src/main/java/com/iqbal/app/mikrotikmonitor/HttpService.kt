@@ -29,10 +29,31 @@ class HttpService {
         }
 
         private fun createRetrofit(baseUrl: String): Retrofit {
-            return Retrofit.Builder()
-                .baseUrl(baseUrl)
-                .addConverterFactory(MoshiConverterFactory.create())
-                .build()
+            var retrofit: Retrofit? = null
+
+            val baseUrls: Array<String> = arrayOf(
+                baseUrl,
+                Common.appContext.getString(R.string.server_address_preference_default_val)
+            )
+
+            for (currentBaseUrl in baseUrls) {
+                try {
+                    retrofit = Retrofit.Builder()
+                        .baseUrl(currentBaseUrl)
+                        .addConverterFactory(MoshiConverterFactory.create())
+                        .build()
+                    break
+                }
+                catch (e: Exception) {
+                    // Ignore
+                }
+            }
+
+            if (retrofit === null) {
+                throw Exception("Failed to instantiate Retrofit.");
+            }
+
+            return retrofit
         }
 
         private fun createService(baseUrl: String): MikrotikApiService {
