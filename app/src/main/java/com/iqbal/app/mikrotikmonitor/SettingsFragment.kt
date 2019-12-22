@@ -17,30 +17,29 @@ class SettingsFragment: AppFragment() {
         throw Exception("Shared preferences can't be loaded.")
 
         view.apply {
-            edit_text_server_address.apply {
-                setText(sharedPref.getString(getString(R.string.server_address_preference_key), null))
-            }
+            val currentServerAddress: String? = sharedPref.getString(getString(R.string.server_address_preference_key), null)
+            edit_text_server_address.setText(currentServerAddress)
 
             button_save_settings.setOnClickListener {
-                with (sharedPref.edit()) {
+                val newServerAddress = edit_text_server_address.text.toString()
 
-                    val newServerAddress = edit_text_server_address.text.toString()
+                try {
+                    HttpService.setBaseUrl(newServerAddress)
 
-                    putString(
-                        getString(R.string.server_address_preference_key),
-                        newServerAddress
-                    )
-
-                    with (commit()) {
-                        HttpService.setBaseUrl(newServerAddress)
-                        
-                        Toast.makeText(context, getString(
-                                if (this)
-                                    R.string.action_save_settings_success else
-                                    R.string.action_save_settings_fail
-                            ), Toast.LENGTH_SHORT)
-                            .show()
+                    sharedPref.edit().apply {
+                        putString(getString(R.string.server_address_preference_key), newServerAddress)
+                        if (!commit()) {
+                            throw Exception(getString(R.string.action_save_settings_fail))
+                        }
                     }
+                }
+                catch (e: Exception) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT)
+                        .show()
+                }
+                finally {
+                    Toast.makeText(context, getString(R.string.action_save_settings_success), Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
         }

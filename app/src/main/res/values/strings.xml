@@ -15,4 +15,7 @@
     <string name="server_address_preference_key"> SERVER_ADDRESS </string>
 
     <string name="server_address_preference_default_val"> http://localhost:8000 </string>
+    <string name="ACTION_BAN_CONNECTED_CLIENT">Disconnect / Ban</string>
+    <string name="ACTION_DELETE_ACCESS_LIST_ITEM">Delete</string>
+    <string name="ACTION_FAILED">Failed</string>
 </resources>

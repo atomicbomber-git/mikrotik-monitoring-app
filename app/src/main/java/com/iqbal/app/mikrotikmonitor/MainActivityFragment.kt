@@ -20,9 +20,14 @@ enum class Feature {
         override fun fragment() = LogsFragment()
     },
 
-    HOTSPOT {
+    Wireless {
         override fun tabName() = "Wireless"
         override fun fragment() = ConnectedClientsFragment()
+    },
+
+    ACCESS_LIST {
+        override fun tabName() = "Access List"
+        override fun fragment() = AccessListFragment()
     },
 
     SETTINGS {
