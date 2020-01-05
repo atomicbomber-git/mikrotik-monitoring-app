@@ -1,6 +1,7 @@
 package com.iqbal.app.mikrotikmonitor
 
 import android.os.Bundle
+import android.text.format.Formatter
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.fragment_connected_clients.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.math.roundToLong
 
 interface connectedClientBanListener {
     public fun onConnectedClientBan()
@@ -87,6 +89,7 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
                     view.network_interface.text = connectedClient.network_interface
                     view.mac_address.text = connectedClient.mac_address
                     view.access_point.text = connectedClient.ap
+                    view.bandwith_usage.text = Formatter.formatFileSize(Common.appContext, connectedClient.hw_frame_bytes.replace(",", ".").toFloat().roundToLong() )
 
                     // Handle ban button click action
                     view.banConnectedClientButton.setOnClickListener {
