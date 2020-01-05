@@ -52,7 +52,6 @@ class LogsFragment(): AppFragment() {
                 }
 
                 override fun onResponse(call: Call<List<Log>>, response: Response<List<Log>>) {
-                    android.util.Log.d("EXPERIMENTAL", response.message())
 
                     loadDataFinished()
 
@@ -61,11 +60,10 @@ class LogsFragment(): AppFragment() {
                         return
                     }
 
-                    logList.also {logList ->
-
-                        response.body()?.apply {
+                    logList.also {
+                        response.body()?.also {responseLogList ->
                             logList.clear()
-                            logList.addAll(this)
+                            logList.addAll(responseLogList)
                             adapter.notifyDataSetChanged()
                         }
                     }
@@ -80,7 +78,7 @@ class LogsFragment(): AppFragment() {
             })
     }
 
-    class LogListAdapter(private val logs: ArrayList<Log>): RecyclerView.Adapter<LogListAdapter.ViewHolder>() {
+    class LogListAdapter(private val accessListItems: ArrayList<Log>): RecyclerView.Adapter<LogListAdapter.ViewHolder>() {
 
         class ViewHolder(val view: View): RecyclerView.ViewHolder(view)
 
@@ -88,11 +86,11 @@ class LogsFragment(): AppFragment() {
             LayoutInflater.from(parent.context).inflate(R.layout.log_item, parent, false)
         )
 
-        override fun getItemCount(): Int = this.logs.size
+        override fun getItemCount(): Int = this.accessListItems.size
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
             viewHolder.view.apply {
-                logs[position].also { log ->
+                accessListItems[position].also { log ->
                     log_id.text = log.id
                     log_time.text = log.time
                     log_topic.text = log.topics

@@ -1,9 +1,7 @@
 package com.iqbal.app.mikrotikmonitor
 
 import retrofit2.Call
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 data class Log(
     val id: String = "",
@@ -72,6 +70,36 @@ data class ConnectedClient (
     val tx_rate_set: String = ""
 )
 
+data class AccessListItem (
+    val id: String = "",
+    val mac_address: String = "",
+    val network_interface: String = "",
+    val signal_range: String = "",
+    val allow_signal_out_of_range: String = "",
+    val authentication: String = "",
+    val forwarding: String = "",
+    val ap_tx_limit: String = "",
+    val client_tx_limit: String = "",
+    val private_algo: String = "",
+    val private_key: String = "",
+    val private_pre_shared_key: String = "",
+    val management_protection_key: String = "",
+    val vlan_mode: String = "",
+    val vlan_id: String = "",
+    val disabled: String = ""
+)
+
+enum class Statuses {
+    SUCCESS,
+    ERROR;
+}
+
+data class CommandResponse (
+    var status: String?,
+    var message: String?
+)
+
+
 interface MikrotikApiService {
     @GET("/api/router/{routerId}/interface/index")
     fun getNetworkInterfaces(@Path("routerId")  routerId: Int): Call<List<NetworkInterface>>
@@ -87,4 +115,14 @@ interface MikrotikApiService {
 
     @GET("/api/router/{routerId}/wireless/registration_table/index")
     fun getConnectedClients(@Path("routerId")  routerId: Int): Call<List<ConnectedClient>>
+
+    @GET("/api/router/{routerId}/wireless/access_list/index")
+    fun getAccessList(@Path("routerId")  routerId: Int): Call<List<AccessListItem>>
+
+    @POST("/api/router/{routerId}/wireless/access_list/create")
+    fun createAccessListItem(@Path("routerId")  routerId: Int, @Body accessListItem: AccessListItem): Call<CommandResponse>
+
+    @FormUrlEncoded
+    @POST("/api/router/{routerId}/wireless/access_list/delete")
+    fun deleteAccessListItem(@Path("routerId")  routerId: Int, @Field("id") id: String): Call<CommandResponse>
 }
