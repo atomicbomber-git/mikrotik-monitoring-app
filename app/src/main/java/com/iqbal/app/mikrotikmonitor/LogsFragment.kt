@@ -44,8 +44,6 @@ class LogsFragment(): AppFragment() {
                 override fun onFailure(call: Call<List<Log>>, t: Throwable) {
                     loadDataFinished()
 
-                    android.util.Log.d("EXPERIMENTAL", t.message)
-
                     t.message?.apply {
                         fail(this)
                         return
@@ -66,7 +64,6 @@ class LogsFragment(): AppFragment() {
                     logList.also {logList ->
 
                         response.body()?.apply {
-                            android.util.Log.d("EXPERIMENTAL", this.count().toString())
                             logList.clear()
                             logList.addAll(this)
                             adapter.notifyDataSetChanged()
@@ -75,8 +72,10 @@ class LogsFragment(): AppFragment() {
                 }
 
                 private fun fail(message: String) {
-                    Toast.makeText(context, message, Toast.LENGTH_LONG)
-                        .show()
+                    context?.run {
+                        Toast.makeText(this, message, Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             })
     }
