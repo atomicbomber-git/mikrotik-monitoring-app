@@ -35,7 +35,9 @@ class LogsFragment(): AppFragment() {
     }
 
     private fun loadDataFinished() {
-        log_index_swipe_refresh_layout.isRefreshing = false
+        log_index_swipe_refresh_layout?.apply {
+            isRefreshing = false
+        }
     }
 
     private fun loadData() {

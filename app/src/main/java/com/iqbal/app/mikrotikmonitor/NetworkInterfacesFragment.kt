@@ -30,7 +30,9 @@ class NetworkInterfacesFragment: AppFragment() {
     }
 
     private fun loadDataFinished() {
-        interface_index_swipe_refresh_layout.isRefreshing = false
+        interface_index_swipe_refresh_layout?.apply {
+            isRefreshing = true
+        }
     }
 
     private fun setUpInterfaceRecyclerView() {
@@ -125,7 +127,7 @@ class NetworkInterfacesFragment: AppFragment() {
             )
                 .enqueue(object: Callback<NetworkInterface> {
                     override fun onFailure(call: Call<NetworkInterface>, t: Throwable) {
-                        Toast.makeText(activity, "FAIL", Toast.LENGTH_SHORT)
+                        Toast.makeText(activity, getString(R.string.connection_problem), Toast.LENGTH_SHORT)
                             .show()
                     }
 
@@ -135,7 +137,7 @@ class NetworkInterfacesFragment: AppFragment() {
                         }
 
                         if (response.body() === null) {
-                            Toast.makeText(activity, "NULL", Toast.LENGTH_SHORT)
+                            Toast.makeText(activity, getString(R.string.connection_problem), Toast.LENGTH_SHORT)
                                 .show()
                         }
                     }

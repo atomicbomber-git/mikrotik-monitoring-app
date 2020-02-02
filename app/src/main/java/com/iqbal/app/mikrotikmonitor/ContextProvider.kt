@@ -3,6 +3,7 @@ package com.iqbal.app.mikrotikmonitor
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 
@@ -48,5 +49,15 @@ object Common {
 
     fun setContext(context: Context) {
         appContext = context
+    }
+
+    fun getPrimarySharedPreferences(): SharedPreferences {
+        return appContext.getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE)
+    }
+
+    fun getCurrentServerHost(): String? {
+        return getPrimarySharedPreferences().getString(
+            Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST
+        , null)
     }
 }

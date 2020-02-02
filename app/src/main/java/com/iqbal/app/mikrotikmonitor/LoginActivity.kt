@@ -12,17 +12,31 @@ import retrofit2.Call
 import retrofit2.Response
 
 class LoginActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
+        setUpViews()
+        setDefaultServerHost()
+    }
 
+    private fun setUpViews() {
+        setContentView(R.layout.activity_login)
         login.setOnClickListener {
+            try {
+                HttpService.setBaseUrl(server_host.text.toString())
+            } catch (e: Exception) {
+                Toast.makeText(
+                    Common.appContext,
+                    getString(R.string.server_host_url_invalid),
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            }
+
             getTokenFromServer(
                 username = this.username.text.toString(),
                 password = this.password.text.toString(),
                 onSuccess = { token ->
-                    Common.appContext.getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE)
+                    Common.getPrimarySharedPreferences()
                         .edit()?.let {
                             it.putString(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN, token.token)
                             it.commit()
@@ -36,14 +50,27 @@ class LoginActivity : AppCompatActivity() {
                         Common.appContext,
                         getString(R.string.invalid_credentials),
                         Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    ).show()
                 }
             )
         }
     }
 
-    public fun getTokenFromServer(
+    private fun setDefaultServerHost() {
+        val inputServerHost = server_host.text.toString()
+
+        if (inputServerHost.equals("")) {
+            val currentServerHost = Common.getCurrentServerHost()
+
+            if (currentServerHost !== null) {
+                server_host.setText(currentServerHost)
+            } else {
+                server_host.setText(Config.SERVER_DEFAULT_HOST)
+            }
+        }
+    }
+
+    private fun getTokenFromServer(
         username: String,
         password: String,
         onSuccess: (TokenResponse) -> Unit,

@@ -45,7 +45,9 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
     }
 
     private fun loadData() {
-        connected_client_index_swipe_refresh_layout.isRefreshing = true
+        connected_client_index_swipe_refresh_layout?.apply {
+            isRefreshing = true
+        }
 
         HttpService.instance.getConnectedClients(Config.PRIMARY_ROUTER_ID)
             .enqueue(object: Callback<List<ConnectedClient>> {
@@ -68,7 +70,9 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
     }
 
     private fun onLoadingFinished() {
-        connected_client_index_swipe_refresh_layout.isRefreshing = false
+        connected_client_index_swipe_refresh_layout?.apply {
+            isRefreshing = false
+        }
     }
 
     class ConnectedClientListAdapter(private val connectedClients: ArrayList<ConnectedClient>, private val connectedClientBanListener: connectedClientBanListener):

@@ -25,4 +25,6 @@
     <string name="invalid_credentials">Username atau password salah</string>
     <string name="log_out">Log Out</string>
     <string name="about">About</string>
+    <string name="server_host_url_invalid">Format server host keliru. Mohon gunakan format seperti \'http://alamat\'</string>
+    <string name="connection_problem">Terjadi masalah.</string>
 </resources>
