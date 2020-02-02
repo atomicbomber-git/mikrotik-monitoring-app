@@ -18,4 +18,11 @@
     <string name="ACTION_BAN_CONNECTED_CLIENT">Disconnect / Ban</string>
     <string name="ACTION_DELETE_ACCESS_LIST_ITEM">Delete</string>
     <string name="ACTION_FAILED">Failed</string>
+
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="login_button">Log In</string>
+    <string name="invalid_credentials">Username atau password salah</string>
+    <string name="log_out">Log Out</string>
+    <string name="about">About</string>
 </resources>

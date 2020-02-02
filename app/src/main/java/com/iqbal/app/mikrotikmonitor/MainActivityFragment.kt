@@ -1,6 +1,5 @@
 package com.iqbal.app.mikrotikmonitor
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,12 +10,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 
 enum class Feature {
     NETWORK_INTERFACES {
-        override fun tabName() = "Network Interfaces"
+        override fun tabName() = "Network Interface"
         override fun fragment() = NetworkInterfacesFragment()
     },
 
     LOGS {
-        override fun tabName() = "Logs"
+        override fun tabName() = "Log"
         override fun fragment() = LogsFragment()
     },
 

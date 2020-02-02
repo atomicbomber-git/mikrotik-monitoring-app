@@ -1,7 +1,7 @@
 package com.iqbal.app.mikrotikmonitor
 
-import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +13,12 @@ import kotlinx.android.synthetic.main.interface_item.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import retrofit2.converter.moshi.MoshiConverterFactory
 
 class NetworkInterfacesFragment: AppFragment() {
     override fun getLayout() = R.layout.fragment_network_interface
     val networkInterfaceList = ArrayList<NetworkInterface>()
+    val adapter = NetworkInterfaceListAdapter(networkInterfaceList)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         this.interface_index_swipe_refresh_layout.setOnRefreshListener {
@@ -34,12 +36,13 @@ class NetworkInterfacesFragment: AppFragment() {
     private fun setUpInterfaceRecyclerView() {
         interface_index_recycler_view.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = NetworkInterfaceListAdapter(networkInterfaceList)
         }
+        interface_index_recycler_view.adapter = adapter
     }
 
     private fun loadData() {
         networkInterfaceList.clear()
+        adapter.notifyDataSetChanged()
 
         HttpService.instance.getNetworkInterfaces(Config.PRIMARY_ROUTER_ID)
             .enqueue(object : Callback<List<NetworkInterface>> {
@@ -63,13 +66,13 @@ class NetworkInterfacesFragment: AppFragment() {
                     response.body().apply {
                         networkInterfaceList
                             .addAll(this as ArrayList<NetworkInterface>)
-                        interface_index_recycler_view.adapter?.notifyDataSetChanged()
+                        adapter.notifyDataSetChanged()
                     }
                 }
             })
     }
 
-    inner class NetworkInterfaceListAdapter(private val dataset: List<NetworkInterface>) :
+    inner class NetworkInterfaceListAdapter(private val dataset: MutableList<NetworkInterface>) :
         RecyclerView.Adapter<NetworkInterfaceListAdapter.ItemViewHolder>() {
 
         inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -104,21 +107,37 @@ class NetworkInterfacesFragment: AppFragment() {
             }
 
             holder.itemView.button_toggle_disabled.setOnClickListener {
-                toggleNetworkInterface(networkInterface.id)
+                 toggleNetworkInterface(networkInterface.id) {
+
+                     Toast.makeText(activity, it.id + " " + it.disabled, Toast.LENGTH_SHORT)
+                         .show()
+
+                     dataset[position] = it
+                     notifyDataSetChanged()
+                 }
             }
         }
 
-        private fun toggleNetworkInterface(networkInterfaceId: String) {
+        private fun toggleNetworkInterface(networkInterfaceId: String, onSuccess: (networkInterface: NetworkInterface) -> Unit) {
             HttpService.instance.toggleNetworkInterface(
                 Config.PRIMARY_ROUTER_ID,
                 networkInterfaceId
             )
-                .enqueue(object: Callback<String> {
-                    override fun onFailure(call: Call<String>, t: Throwable) {
+                .enqueue(object: Callback<NetworkInterface> {
+                    override fun onFailure(call: Call<NetworkInterface>, t: Throwable) {
+                        Toast.makeText(activity, "FAIL", Toast.LENGTH_SHORT)
+                            .show()
                     }
 
-                    override fun onResponse(call: Call<String>, response: Response<String>) {
-                        loadData()
+                    override fun onResponse(call: Call<NetworkInterface>, response: Response<NetworkInterface>) {
+                        response.body()?.let {
+                            onSuccess(it)
+                        }
+
+                        if (response.body() === null) {
+                            Toast.makeText(activity, "NULL", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
                 })
         }

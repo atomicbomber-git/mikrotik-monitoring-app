@@ -99,19 +99,29 @@ data class CommandResponse (
     var message: String?
 )
 
+data class TokenResponse (
+    var token: String
+)
 
 interface MikrotikApiService {
+    @FormUrlEncoded
+    @POST("/api/login")
+    fun logIn(
+        @Field("username") username: String,
+        @Field("password") password: String
+    ): Call<TokenResponse>
+
     @GET("/api/router/{routerId}/interface/index")
     fun getNetworkInterfaces(@Path("routerId")  routerId: Int): Call<List<NetworkInterface>>
 
     @GET("/api/router/{routerId}/log/index")
     fun getLogs(@Path("routerId")  routerId: Int): Call<List<Log>>
 
-    @POST("/api/router/{routerId}/toggle/{networkInterfaceId}")
+    @POST("/api/router/{routerId}/interface/toggle/{networkInterfaceId}")
     fun toggleNetworkInterface(
         @Path("routerId")  routerId: Int,
         @Path("networkInterfaceId")  networkInterfaceId: String
-    ): Call<String>
+    ): Call<NetworkInterface>
 
     @GET("/api/router/{routerId}/wireless/registration_table/index")
     fun getConnectedClients(@Path("routerId")  routerId: Int): Call<List<ConnectedClient>>
