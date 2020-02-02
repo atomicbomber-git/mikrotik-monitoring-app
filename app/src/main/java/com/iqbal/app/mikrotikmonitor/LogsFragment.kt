@@ -70,8 +70,10 @@ class LogsFragment(): AppFragment() {
                 }
 
                 private fun fail(message: String) {
-                    Toast.makeText(context, message, Toast.LENGTH_LONG)
-                        .show()
+                    context?.run {
+                        Toast.makeText(this, message, Toast.LENGTH_LONG)
+                            .show()
+                    }
                 }
             })
     }
