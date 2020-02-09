@@ -101,11 +101,6 @@ data class NetworkRouter(
     val updated_at: String = ""
 )
 
-enum class Statuses {
-    SUCCESS,
-    ERROR;
-}
-
 data class CommandResponse (
     var status: String?,
     var message: String?
@@ -120,7 +115,7 @@ interface MikrotikApiService {
         const val API_ROOT_PATH: String = "/api"
     }
 
-    @GET("${API_ROOT_PATH}/network_routers")
+    @GET("${API_ROOT_PATH}/router")
     fun getNetworkRouters(): Call<List<NetworkRouter>>
 
     @FormUrlEncoded
