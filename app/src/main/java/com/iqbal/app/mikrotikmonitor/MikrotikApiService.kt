@@ -1,5 +1,7 @@
 package com.iqbal.app.mikrotikmonitor
 
+import android.os.Parcel
+import android.os.Parcelable
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -110,10 +112,26 @@ data class TokenResponse (
     var token: String
 )
 
+data class UpdateRouterResponse(
+    var data: NetworkRouter? = null,
+    var message: String? = null,
+    var errors: List<String>? = null
+)
+
 interface MikrotikApiService {
     companion object {
         const val API_ROOT_PATH: String = "/api"
     }
+
+    @FormUrlEncoded
+    @PUT("${API_ROOT_PATH}/router/{router}")
+    fun updateNetworkRouter(
+        @Path("router") routerId: Int,
+        @Field("name") name: String,
+        @Field("host") host: String,
+        @Field("admin_username") admin_username: String,
+        @Field("admin_password") password: String
+    ): Call<UpdateRouterResponse>
 
     @GET("${API_ROOT_PATH}/router")
     fun getNetworkRouters(): Call<List<NetworkRouter>>

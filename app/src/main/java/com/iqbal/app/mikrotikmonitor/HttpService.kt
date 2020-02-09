@@ -18,21 +18,17 @@ class HttpService {
 
         init {
             Common.appContext.let {
-                sharedPreferences = it.getSharedPreferences(
-                    it.getString(R.string.primary_shared_preference_id),
-                    Context.MODE_PRIVATE
-                )
+                sharedPreferences = Common.getPrimarySharedPreferences()
 
                 try {
                     instance = createService(
                         sharedPreferences.getString(
-                            it.getString(R.string.server_address_preference_key),
-                            it.getString(R.string.server_address_preference_default_val)
-                        ) ?: it.getString(R.string.server_address_preference_default_val)
+                            Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST,
+                            Config.SERVER_DEFAULT_HOST
+                        ) ?: Config.SERVER_DEFAULT_HOST
                     )
                 } catch (e: Exception) {
-                    instance =
-                        createService(it.getString(R.string.server_address_preference_default_val))
+                    instance = createService(Config.SERVER_DEFAULT_HOST)
                 }
             }
         }
@@ -56,7 +52,7 @@ class HttpService {
         }
 
         fun setBaseUrl(baseUrl: String) {
-            with(Common.appContext.getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE).edit()) {
+            with(Common.getPrimarySharedPreferences().edit()) {
                 putString(Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST, baseUrl)
                 commit()
             }
