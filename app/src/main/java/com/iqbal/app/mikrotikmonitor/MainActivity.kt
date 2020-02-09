@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.action_log_out -> {
-            with (getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE).edit()) {
+            with(getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE).edit()) {
                 remove(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN)
                 commit()
             }

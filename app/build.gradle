@@ -37,7 +37,7 @@ dependencies {
 
     implementation 'com.facebook.stetho:stetho:1.5.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.1'
-    
+
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha03"
     implementation 'androidx.cardview:cardview:1.0.0'
     testImplementation 'junit:junit:4.12'

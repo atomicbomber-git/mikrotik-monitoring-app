@@ -89,6 +89,18 @@ data class AccessListItem (
     val disabled: String = ""
 )
 
+data class NetworkRouter(
+    val id: Int = -1,
+    val user_id: Int = -1,
+    val name: String = "",
+    val host: String = "",
+    val admin_username: String = "",
+    val admin_password: String = "",
+    val is_primary: String = "",
+    val created_at: String = "",
+    val updated_at: String = ""
+)
+
 enum class Statuses {
     SUCCESS,
     ERROR;
@@ -104,6 +116,13 @@ data class TokenResponse (
 )
 
 interface MikrotikApiService {
+    companion object {
+        const val API_ROOT_PATH: String = "/api"
+    }
+
+    @GET("${API_ROOT_PATH}/network_routers")
+    fun getNetworkRouters(): Call<List<NetworkInterface>>
+
     @FormUrlEncoded
     @POST("/api/login")
     fun logIn(
