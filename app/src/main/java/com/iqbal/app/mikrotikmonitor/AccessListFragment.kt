@@ -45,11 +45,15 @@ class AccessListFragment: AppFragment(), accessListItemDeleteListener {
     }
 
     private fun loadDataFinished() {
-        swipe_refresh_layout.isRefreshing = false
+        swipe_refresh_layout?.apply {
+            isRefreshing = false
+        }
     }
 
     private fun loadData() {
-        swipe_refresh_layout.isRefreshing = true
+        swipe_refresh_layout?.apply {
+            isRefreshing = true
+        }
 
         HttpService.instance.getAccessList(Config.PRIMARY_ROUTER_ID)
             .enqueue(object: Callback<List<AccessListItem>> {

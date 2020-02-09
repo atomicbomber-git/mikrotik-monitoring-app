@@ -1,7 +1,6 @@
 package com.iqbal.app.mikrotikmonitor
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,15 +12,14 @@ import kotlinx.android.synthetic.main.interface_item.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.converter.moshi.MoshiConverterFactory
 
-class NetworkInterfacesFragment: AppFragment() {
+class NetworkInterfacesFragment : AppFragment() {
     override fun getLayout() = R.layout.fragment_network_interface
     val networkInterfaceList = ArrayList<NetworkInterface>()
     val adapter = NetworkInterfaceListAdapter(networkInterfaceList)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        this.interface_index_swipe_refresh_layout.setOnRefreshListener {
+        this.swipeRefreshLayout.setOnRefreshListener {
             loadData()
         }
 
@@ -30,14 +28,14 @@ class NetworkInterfacesFragment: AppFragment() {
     }
 
     private fun loadDataFinished() {
-        interface_index_swipe_refresh_layout.isRefreshing = false
+        swipeRefreshLayout?.isRefreshing = false
     }
 
     private fun setUpInterfaceRecyclerView() {
-        interface_index_recycler_view.apply {
+        recyclerView.apply {
             layoutManager = LinearLayoutManager(context)
         }
-        interface_index_recycler_view.adapter = adapter
+        recyclerView.adapter = adapter
     }
 
     private fun loadData() {
@@ -77,8 +75,10 @@ class NetworkInterfacesFragment: AppFragment() {
 
         inner class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
-        override fun onCreateViewHolder(parent: ViewGroup,
-                                        viewType: Int): ItemViewHolder {
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            viewType: Int
+        ): ItemViewHolder {
             val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.interface_item, parent, false)
 
@@ -97,45 +97,60 @@ class NetworkInterfacesFragment: AppFragment() {
                     text = if (networkInterface.disabled == "false") "False" else "True"
                     setTextColor(
                         if (networkInterface.disabled == "true")
-                            resources.getColor(R.color.colorPrimary)
+                            resources.getColor(R.color.colorPrimary, Common.appContext.theme)
                         else
-                            resources.getColor(R.color.colorAccent)
+                            resources.getColor(R.color.colorAccent, Common.appContext.theme)
                     )
                 }
                 button_toggle_disabled.apply {
-                    text = if (networkInterface.disabled == "false") "Disable" else "Enable" }
+                    text = if (networkInterface.disabled == "false") "Disable" else "Enable"
+                }
             }
 
             holder.itemView.button_toggle_disabled.setOnClickListener {
-                 toggleNetworkInterface(networkInterface.id) {
+                toggleNetworkInterface(networkInterface.id) {
 
-                     Toast.makeText(activity, it.id + " " + it.disabled, Toast.LENGTH_SHORT)
-                         .show()
+                    Toast.makeText(activity, it.id + " " + it.disabled, Toast.LENGTH_SHORT)
+                        .show()
 
-                     dataset[position] = it
-                     notifyDataSetChanged()
-                 }
+                    dataset[position] = it
+                    notifyDataSetChanged()
+                }
             }
         }
 
-        private fun toggleNetworkInterface(networkInterfaceId: String, onSuccess: (networkInterface: NetworkInterface) -> Unit) {
+        private fun toggleNetworkInterface(
+            networkInterfaceId: String,
+            onSuccess: (networkInterface: NetworkInterface) -> Unit
+        ) {
             HttpService.instance.toggleNetworkInterface(
                 Config.PRIMARY_ROUTER_ID,
                 networkInterfaceId
             )
-                .enqueue(object: Callback<NetworkInterface> {
+                .enqueue(object : Callback<NetworkInterface> {
                     override fun onFailure(call: Call<NetworkInterface>, t: Throwable) {
-                        Toast.makeText(activity, "FAIL", Toast.LENGTH_SHORT)
+                        Toast.makeText(
+                            activity,
+                            getString(R.string.connection_problem),
+                            Toast.LENGTH_SHORT
+                        )
                             .show()
                     }
 
-                    override fun onResponse(call: Call<NetworkInterface>, response: Response<NetworkInterface>) {
+                    override fun onResponse(
+                        call: Call<NetworkInterface>,
+                        response: Response<NetworkInterface>
+                    ) {
                         response.body()?.let {
                             onSuccess(it)
                         }
 
                         if (response.body() === null) {
-                            Toast.makeText(activity, "NULL", Toast.LENGTH_SHORT)
+                            Toast.makeText(
+                                activity,
+                                getString(R.string.connection_problem),
+                                Toast.LENGTH_SHORT
+                            )
                                 .show()
                         }
                     }

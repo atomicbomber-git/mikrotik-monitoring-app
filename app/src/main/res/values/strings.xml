@@ -24,6 +24,6 @@
     <string name="login_button">Log In</string>
     <string name="invalid_credentials">Username atau password salah</string>
     <string name="log_out">Log Out</string>
-    <string name="about">About</string>
-    <string name="router_menu_text">Router</string>
+    <string name="router_menu"> Router </string>
+    <string name="connection_problem">Terjadi masalah saat menghubungi server</string>
 </resources>

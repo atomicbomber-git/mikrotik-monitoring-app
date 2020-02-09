@@ -121,7 +121,7 @@ interface MikrotikApiService {
     }
 
     @GET("${API_ROOT_PATH}/network_routers")
-    fun getNetworkRouters(): Call<List<NetworkInterface>>
+    fun getNetworkRouters(): Call<List<NetworkRouter>>
 
     @FormUrlEncoded
     @POST("/api/login")

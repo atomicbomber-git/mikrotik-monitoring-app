@@ -6,13 +6,13 @@
         android:layout_height="match_parent">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/interface_index_swipe_refresh_layout"
+        android:id="@+id/swipeRefreshLayout"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             >
 
         <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/interface_index_recycler_view"
+                android:id="@+id/recyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 >

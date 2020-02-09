@@ -11,13 +11,13 @@ class SettingsFragment: AppFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val sharedPref = activity?.getSharedPreferences(
-            getString(R.string.primary_shared_preference_id),
+            Config.SHARED_PREF_PRIMARY_ID,
             Context.MODE_PRIVATE
         ) ?:
         throw Exception("Shared preferences can't be loaded.")
 
         view.apply {
-            val currentServerAddress: String? = sharedPref.getString(getString(R.string.server_address_preference_key), null)
+            val currentServerAddress: String? = sharedPref.getString(Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST, null)
             edit_text_server_address.setText(currentServerAddress)
 
             button_save_settings.setOnClickListener {
@@ -25,13 +25,6 @@ class SettingsFragment: AppFragment() {
 
                 try {
                     HttpService.setBaseUrl(newServerAddress)
-
-                    sharedPref.edit().apply {
-                        putString(getString(R.string.server_address_preference_key), newServerAddress)
-                        if (!commit()) {
-                            throw Exception(getString(R.string.action_save_settings_fail))
-                        }
-                    }
                 }
                 catch (e: Exception) {
                     Toast.makeText(context, e.message, Toast.LENGTH_SHORT)

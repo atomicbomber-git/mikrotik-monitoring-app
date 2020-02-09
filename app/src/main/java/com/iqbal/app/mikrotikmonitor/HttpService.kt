@@ -30,9 +30,9 @@ class HttpService {
                             it.getString(R.string.server_address_preference_default_val)
                         ) ?: it.getString(R.string.server_address_preference_default_val)
                     )
-                }
-                catch (e: Exception) {
-                    instance = createService(it.getString(R.string.server_address_preference_default_val))
+                } catch (e: Exception) {
+                    instance =
+                        createService(it.getString(R.string.server_address_preference_default_val))
                 }
             }
         }
@@ -56,6 +56,11 @@ class HttpService {
         }
 
         fun setBaseUrl(baseUrl: String) {
+            with(Common.appContext.getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE).edit()) {
+                putString(Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST, baseUrl)
+                commit()
+            }
+
             instance = createService(baseUrl)
         }
     }
