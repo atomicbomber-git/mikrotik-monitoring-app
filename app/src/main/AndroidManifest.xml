@@ -16,8 +16,8 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:usesCleartextTraffic="true">
-        <activity android:name=".NetworkRouterEdit"></activity>
-        <activity android:name=".NetworkRouterManagement" />
+        <activity android:name=".NetworkRouterEditActivity"></activity>
+        <activity android:name=".NetworkRouterManagementActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

@@ -13,10 +13,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NetworkRouterManagement : AppCompatActivity() {
+class NetworkRouterManagementActivity : AppCompatActivity() {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(this)
     private var networkRouterList: ArrayList<NetworkRouter> = ArrayList()
     private val adapter = NetworkRouterListAdapter(networkRouterList, this)
+    private val menuHandler: MenuHandler = MenuHandler(this)
+
+    override fun onCreateOptionsMenu(menu: Menu?) = menuHandler.onCreateOptionsMenu(menu)
+    override fun onOptionsItemSelected(item: MenuItem) = menuHandler.onOptionsItemSelected(item)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,44 +37,6 @@ class NetworkRouterManagement : AppCompatActivity() {
         this.swipeRefreshLayout?.setOnRefreshListener { loadData() }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_log_out -> {
-            logOut()
-        }
-        R.id.action_router_menu -> {
-            goToRouterManagement()
-        }
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
-    }
-
-    fun goToRouterManagement(): Boolean {
-        startActivity(Intent(this, NetworkRouterManagement::class.java))
-        return true
-    }
-
-    fun logOut(): Boolean {
-        with(Common.getPrimarySharedPreferences().edit()) {
-            remove(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN)
-            commit()
-        }
-
-        startActivity(
-            Intent(
-                this,
-                MainActivity::class.java
-            )
-        )
-        finish()
-        return true
-    }
-
     private fun loadDataFinished() {
         this.swipeRefreshLayout?.isRefreshing = false
     }
@@ -84,7 +50,7 @@ class NetworkRouterManagement : AppCompatActivity() {
             .enqueue(object : Callback<List<NetworkRouter>> {
                 override fun onFailure(call: Call<List<NetworkRouter>>, t: Throwable) {
                     loadDataFinished()
-                    Toast.makeText(this@NetworkRouterManagement, t.message, Toast.LENGTH_LONG)
+                    Toast.makeText(this@NetworkRouterManagementActivity, t.message, Toast.LENGTH_LONG)
                         .show()
                 }
 
@@ -95,7 +61,7 @@ class NetworkRouterManagement : AppCompatActivity() {
                     loadDataFinished()
                     if (response.code() != 200 && response.body() === null) {
                         Toast.makeText(
-                            this@NetworkRouterManagement,
+                            this@NetworkRouterManagementActivity,
                             response.message(),
                             Toast.LENGTH_LONG
                         ).show()
@@ -136,7 +102,7 @@ class NetworkRouterManagement : AppCompatActivity() {
                 adminPassword.text = networkRouter.admin_password
 
                 update_button.setOnClickListener {
-                    val intent = Intent(Common.appContext, NetworkRouterEdit::class.java)
+                    val intent = Intent(Common.appContext, NetworkRouterEditActivity::class.java)
 
                     intent.putExtra("id", networkRouter.id)
                     intent.putExtra("name", networkRouter.name)

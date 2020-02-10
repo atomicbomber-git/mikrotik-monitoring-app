@@ -10,6 +10,11 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    private val menuHandler: MenuHandler = MenuHandler(this)
+
+    override fun onCreateOptionsMenu(menu: Menu?) = menuHandler.onCreateOptionsMenu(menu)
+    override fun onOptionsItemSelected(item: MenuItem) = menuHandler.onOptionsItemSelected(item)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -29,44 +34,6 @@ class MainActivity : AppCompatActivity() {
         ).getString(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN, null)
 
         return token !== null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.action_log_out -> {
-            logOut()
-        }
-        R.id.action_router_menu -> {
-            goToRouterManagement()
-        }
-        else -> {
-            super.onOptionsItemSelected(item)
-        }
-    }
-
-    private fun goToRouterManagement(): Boolean {
-        startActivity(Intent(this, NetworkRouterManagement::class.java))
-        return true
-    }
-
-    private fun logOut(): Boolean {
-        with(Common.getPrimarySharedPreferences().edit()) {
-            remove(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN)
-            commit()
-        }
-
-        startActivity(
-            Intent(
-                this,
-                MainActivity::class.java
-            )
-        )
-        finish()
-        return true
     }
 
     private fun setUpView() {
