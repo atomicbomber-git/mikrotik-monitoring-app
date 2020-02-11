@@ -1,11 +1,9 @@
 package com.iqbal.app.mikrotikmonitor
 
-import android.os.Parcel
-import android.os.Parcelable
 import retrofit2.Call
 import retrofit2.http.*
 
-data class Log(
+data class RouterLog(
     val id: String = "",
     val time: String = "",
     val topics: String = "",
@@ -40,7 +38,7 @@ data class NetworkInterface(
     val comment: String = ""
 )
 
-data class ConnectedClient (
+data class ConnectedClient(
     val id: String = "",
     val network_interface: String = "",
     val mac_address: String = "",
@@ -72,7 +70,7 @@ data class ConnectedClient (
     val tx_rate_set: String = ""
 )
 
-data class AccessListItem (
+data class AccessListItem(
     val id: String = "",
     val mac_address: String = "",
     val network_interface: String = "",
@@ -103,12 +101,12 @@ data class NetworkRouter(
     val updated_at: String = ""
 )
 
-data class CommandResponse (
+data class CommandResponse(
     var status: String?,
     var message: String?
 )
 
-data class TokenResponse (
+data class TokenResponse(
     var token: String
 )
 
@@ -118,10 +116,34 @@ data class UpdateRouterResponse(
     var errors: List<String>? = null
 )
 
+data class User(
+    var id: String?,
+    var username: String?,
+    var created_at: String?,
+    var updated_at: String?
+)
+
+data class UserLog(
+    var id: String?,
+    var user: User?,
+    var text: String?,
+    var created_at: String?,
+    var updated_at: String?
+)
+
+data class UserLogIndexResponse(
+    var message: String?,
+    var data: List<UserLog>?,
+    var errors: Map<String, List<String>>?
+)
+
 interface MikrotikApiService {
     companion object {
         const val API_ROOT_PATH: String = "/api"
     }
+
+    @GET("${API_ROOT_PATH}/user_log")
+    fun getUserLogs(): Call<UserLogIndexResponse>
 
     @FormUrlEncoded
     @PUT("${API_ROOT_PATH}/router/{router}")
@@ -144,27 +166,27 @@ interface MikrotikApiService {
     ): Call<TokenResponse>
 
     @GET("/api/router/{routerId}/interface/index")
-    fun getNetworkInterfaces(@Path("routerId")  routerId: Int): Call<List<NetworkInterface>>
+    fun getNetworkInterfaces(@Path("routerId") routerId: Int): Call<List<NetworkInterface>>
 
     @GET("/api/router/{routerId}/log/index")
-    fun getLogs(@Path("routerId")  routerId: Int): Call<List<Log>>
+    fun getLogs(@Path("routerId") routerId: Int): Call<List<RouterLog>>
 
     @POST("/api/router/{routerId}/interface/toggle/{networkInterfaceId}")
     fun toggleNetworkInterface(
-        @Path("routerId")  routerId: Int,
-        @Path("networkInterfaceId")  networkInterfaceId: String
+        @Path("routerId") routerId: Int,
+        @Path("networkInterfaceId") networkInterfaceId: String
     ): Call<NetworkInterface>
 
     @GET("/api/router/{routerId}/wireless/registration_table/index")
-    fun getConnectedClients(@Path("routerId")  routerId: Int): Call<List<ConnectedClient>>
+    fun getConnectedClients(@Path("routerId") routerId: Int): Call<List<ConnectedClient>>
 
     @GET("/api/router/{routerId}/wireless/access_list/index")
-    fun getAccessList(@Path("routerId")  routerId: Int): Call<List<AccessListItem>>
+    fun getAccessList(@Path("routerId") routerId: Int): Call<List<AccessListItem>>
 
     @POST("/api/router/{routerId}/wireless/access_list/create")
-    fun createAccessListItem(@Path("routerId")  routerId: Int, @Body accessListItem: AccessListItem): Call<CommandResponse>
+    fun createAccessListItem(@Path("routerId") routerId: Int, @Body accessListItem: AccessListItem): Call<CommandResponse>
 
     @FormUrlEncoded
     @POST("/api/router/{routerId}/wireless/access_list/delete")
-    fun deleteAccessListItem(@Path("routerId")  routerId: Int, @Field("id") id: String): Call<CommandResponse>
+    fun deleteAccessListItem(@Path("routerId") routerId: Int, @Field("id") id: String): Call<CommandResponse>
 }

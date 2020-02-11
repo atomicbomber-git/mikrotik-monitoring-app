@@ -15,11 +15,16 @@ enum class Feature {
     },
 
     LOGS {
-        override fun tabName() = "Log"
-        override fun fragment() = LogsFragment()
+        override fun tabName() = "Router Log"
+        override fun fragment() = RouterLogFragment()
     },
 
-    Wireless {
+    USER_LOG {
+        override fun tabName() = "User Log"
+        override fun fragment() = UserLogFragment()
+    },
+
+    WIRELESS {
         override fun tabName() = "Wireless"
         override fun fragment() = ConnectedClientsFragment()
     },

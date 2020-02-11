@@ -103,13 +103,11 @@ class NetworkRouterManagementActivity : AppCompatActivity() {
 
                 update_button.setOnClickListener {
                     val intent = Intent(Common.appContext, NetworkRouterEditActivity::class.java)
-
                     intent.putExtra("id", networkRouter.id)
                     intent.putExtra("name", networkRouter.name)
                     intent.putExtra("host", networkRouter.host)
                     intent.putExtra("admin_username", networkRouter.admin_username)
                     intent.putExtra("admin_password", networkRouter.admin_password)
-
                     activity.startActivity(intent)
                 }
             }

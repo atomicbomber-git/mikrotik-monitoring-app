@@ -26,4 +26,7 @@
     <string name="log_out">Log Out</string>
     <string name="router_menu"> Router </string>
     <string name="connection_problem">Terjadi masalah saat menghubungi server</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

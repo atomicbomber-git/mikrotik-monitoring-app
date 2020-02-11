@@ -13,10 +13,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LogsFragment(): AppFragment() {
+class RouterLogFragment(): AppFragment() {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
-    private val logList: ArrayList<Log> = ArrayList()
-    private val adapter: LogListAdapter = LogListAdapter(logList)
+    private val routerLogList: ArrayList<RouterLog> = ArrayList()
+    private val adapter: LogListAdapter = LogListAdapter(routerLogList)
 
     override fun getLayout() = R.layout.fragment_logs
 
@@ -42,8 +42,8 @@ class LogsFragment(): AppFragment() {
 
     private fun loadData() {
         HttpService.instance.getLogs(Config.PRIMARY_ROUTER_ID)
-            .enqueue(object: Callback<List<Log>> {
-                override fun onFailure(call: Call<List<Log>>, t: Throwable) {
+            .enqueue(object: Callback<List<RouterLog>> {
+                override fun onFailure(call: Call<List<RouterLog>>, t: Throwable) {
                     loadDataFinished()
 
                     t.message?.apply {
@@ -53,7 +53,7 @@ class LogsFragment(): AppFragment() {
                     fail("Unknown Error.")
                 }
 
-                override fun onResponse(call: Call<List<Log>>, response: Response<List<Log>>) {
+                override fun onResponse(call: Call<List<RouterLog>>, response: Response<List<RouterLog>>) {
 
                     loadDataFinished()
 
@@ -62,10 +62,10 @@ class LogsFragment(): AppFragment() {
                         return
                     }
 
-                    logList.also {
+                    routerLogList.also {
                         response.body()?.also {responseLogList ->
-                            logList.clear()
-                            logList.addAll(responseLogList)
+                            routerLogList.clear()
+                            routerLogList.addAll(responseLogList)
                             adapter.notifyDataSetChanged()
                         }
                     }
@@ -80,7 +80,7 @@ class LogsFragment(): AppFragment() {
             })
     }
 
-    class LogListAdapter(private val accessListItems: ArrayList<Log>): RecyclerView.Adapter<LogListAdapter.ViewHolder>() {
+    class LogListAdapter(private val accessListItems: ArrayList<RouterLog>): RecyclerView.Adapter<LogListAdapter.ViewHolder>() {
 
         class ViewHolder(val view: View): RecyclerView.ViewHolder(view)
 

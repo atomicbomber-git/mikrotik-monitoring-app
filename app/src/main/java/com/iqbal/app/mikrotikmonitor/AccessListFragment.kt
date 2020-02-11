@@ -14,13 +14,14 @@ import retrofit2.Callback
 import retrofit2.Response
 
 interface accessListItemDeleteListener {
-    public fun onAccessListItemDelete()
+    fun onAccessListItemDelete()
 }
 
-class AccessListFragment: AppFragment(), accessListItemDeleteListener {
+class AccessListFragment : AppFragment(), accessListItemDeleteListener {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
     private val accessList: ArrayList<AccessListItem> = ArrayList()
-    private val adapter: AccessListFragment.AccessListAdapter= AccessListFragment.AccessListAdapter(accessList, this)
+    private val adapter: AccessListFragment.AccessListAdapter =
+        AccessListFragment.AccessListAdapter(accessList, this)
 
     override fun onAccessListItemDelete() {
         loadData()
@@ -56,7 +57,7 @@ class AccessListFragment: AppFragment(), accessListItemDeleteListener {
         }
 
         HttpService.instance.getAccessList(Config.PRIMARY_ROUTER_ID)
-            .enqueue(object: Callback<List<AccessListItem>> {
+            .enqueue(object : Callback<List<AccessListItem>> {
                 override fun onFailure(call: Call<List<AccessListItem>>, t: Throwable) {
                     loadDataFinished()
                     fail(t.message)
@@ -87,30 +88,37 @@ class AccessListFragment: AppFragment(), accessListItemDeleteListener {
     }
 
     class AccessListAdapter(
-            private val accessList: ArrayList<AccessListItem>,
-            private val accessListItemDeleteListener: accessListItemDeleteListener
-    ):
-            RecyclerView.Adapter<AccessListAdapter.ViewHolder>() {
+        private val accessList: ArrayList<AccessListItem>,
+        private val accessListItemDeleteListener: accessListItemDeleteListener
+    ) :
+        RecyclerView.Adapter<AccessListAdapter.ViewHolder>() {
 
-        class ViewHolder(val view: View): RecyclerView.ViewHolder(view)
+        class ViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
         override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolder {
             return ViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.access_list_item, parent, false)
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.access_list_item,
+                    parent,
+                    false
+                )
             )
         }
 
         override fun getItemCount(): Int = this.accessList.size
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-            viewHolder.view.also{ view ->
+            viewHolder.view.also { view ->
                 accessList[position].also { accessListItem ->
                     view.mac_address.text = accessListItem.mac_address
 
                     view.deleteAccessListItemButton.setOnClickListener {
 
-                        HttpService.instance.deleteAccessListItem(Config.PRIMARY_ROUTER_ID, accessListItem.id)
-                            .enqueue(object: Callback<CommandResponse> {
+                        HttpService.instance.deleteAccessListItem(
+                            Config.PRIMARY_ROUTER_ID,
+                            accessListItem.id
+                        )
+                            .enqueue(object : Callback<CommandResponse> {
                                 override fun onFailure(call: Call<CommandResponse>, t: Throwable) {
                                     fail(t.message)
                                 }
@@ -125,7 +133,11 @@ class AccessListFragment: AppFragment(), accessListItemDeleteListener {
                                     }
 
                                     response.body()?.also { commandResponse ->
-                                        Toast.makeText(Common.appContext, commandResponse.status, Toast.LENGTH_SHORT)
+                                        Toast.makeText(
+                                            Common.appContext,
+                                            commandResponse.status,
+                                            Toast.LENGTH_SHORT
+                                        )
                                             .show()
                                     }
 
