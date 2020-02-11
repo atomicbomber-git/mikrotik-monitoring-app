@@ -165,16 +165,32 @@ interface MikrotikApiService {
         @Field("password") password: String
     ): Call<TokenResponse>
 
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
     @GET("/api/router/{routerId}/interface/index")
-    fun getNetworkInterfaces(@Path("routerId") routerId: Int): Call<List<NetworkInterface>>
+    fun getNetworkInterfaces(
+        @Path("routerId") routerId: Int,
+        @Query("api_token") apiToken: String = ""
+    ): Call<List<NetworkInterface>>
 
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
     @GET("/api/router/{routerId}/log/index")
     fun getLogs(@Path("routerId") routerId: Int): Call<List<RouterLog>>
 
+    @Headers(
+        "Accept: application/json",
+        "Content-Type: application/json"
+    )
     @POST("/api/router/{routerId}/interface/toggle/{networkInterfaceId}")
     fun toggleNetworkInterface(
         @Path("routerId") routerId: Int,
-        @Path("networkInterfaceId") networkInterfaceId: String
+        @Path("networkInterfaceId") networkInterfaceId: String,
+        @Query("api_token") apiToken: String = ""
     ): Call<NetworkInterface>
 
     @GET("/api/router/{routerId}/wireless/registration_table/index")

@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_user_log.*
+import kotlinx.android.synthetic.main.user_log_item.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,12 +24,23 @@ class UserLogFragment : AppFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        loadData()
+        setUpView()
+    }
+
+    private fun setUpView() {
+        this.recyclerView.layoutManager = layoutManager
+        this.recyclerView.adapter = adapter
+
         this.swipeRefreshLayout.setOnRefreshListener {
             this.loadData()
         }
     }
 
     fun loadData() {
+        userLogList.clear()
+        adapter.notifyDataSetChanged()
+
         HttpService.instance.getUserLogs()
             .enqueue(object : Callback<UserLogIndexResponse> {
                 override fun onFailure(call: Call<UserLogIndexResponse>, t: Throwable) {
@@ -41,21 +53,31 @@ class UserLogFragment : AppFragment() {
                 ) {
                     when (true) {
                         !response.isSuccessful -> {
-                            fail("Response not successful"); return; }
+                            return fail("Response not successful")
+                        }
                         response.body() === null -> {
-                            fail("Body is null"); return; }
-                    }
-
-                    response.body()?.let {
-                        it.data?.forEach { userLog ->
-                            Log.d("PERSONAL_DEBUG_LOG", userLog.text)
+                            return fail("Body is null")
                         }
                     }
+
+                    response.body()?.let { userLogIndexResponse ->
+                        userLogIndexResponse.data?.let {
+                            userLogList.addAll(it)
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+
+                    finish()
                 }
 
                 private fun fail(message: String?) {
                     Toast.makeText(activity, message, Toast.LENGTH_SHORT)
                         .show()
+                    finish()
+                }
+
+                private fun finish(): Unit {
+                    this@UserLogFragment.swipeRefreshLayout?.isRefreshing = false
                 }
             })
     }
@@ -74,9 +96,13 @@ class UserLogFragment : AppFragment() {
         override fun getItemCount(): Int = this.userLogs.size
 
         override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
+            val userLog = userLogs[position]
+
             viewHolder.view.apply {
-                // title.text = userLogs[position].title
-                // body.text = userLogs[position].body
+                log_id.text = userLog.id
+                content.text = userLog.text
+                time.text = userLog.created_at
+                user_name.text = userLog.user?.username
             }
         }
     }

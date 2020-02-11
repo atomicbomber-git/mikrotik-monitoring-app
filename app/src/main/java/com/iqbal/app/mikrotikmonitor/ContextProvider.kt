@@ -55,6 +55,10 @@ object Common {
         return appContext.getSharedPreferences(Config.SHARED_PREF_PRIMARY_ID, Context.MODE_PRIVATE)
     }
 
+    fun getApiToken(): String? {
+        return getPrimarySharedPreferences().getString(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN, null)
+    }
+
     fun getCurrentServerHost(): String? {
         return getPrimarySharedPreferences().getString(
             Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST

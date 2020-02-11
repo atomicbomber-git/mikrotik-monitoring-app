@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!loggedIn(this)) {
+        if (!loggedIn()) {
             startActivity(Intent(this, LoginActivity::class.java))
             finish()
             return
@@ -27,14 +27,7 @@ class MainActivity : AppCompatActivity() {
         setUpView()
     }
 
-    private fun loggedIn(context: Context): Boolean {
-        val token = context.getSharedPreferences(
-            Config.SHARED_PREF_PRIMARY_ID,
-            Context.MODE_PRIVATE
-        ).getString(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN, null)
-
-        return token !== null
-    }
+    private fun loggedIn() = Common.getApiToken() !== null
 
     private fun setUpView() {
         setContentView(R.layout.activity_main)

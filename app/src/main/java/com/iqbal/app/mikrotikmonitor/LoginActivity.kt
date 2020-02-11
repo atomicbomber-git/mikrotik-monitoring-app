@@ -81,7 +81,7 @@ class LoginActivity : AppCompatActivity() {
                     call: Call<TokenResponse>,
                     response: Response<TokenResponse>
                 ) {
-                    if (response.code() != 200) {
+                    if (!response.isSuccessful) {
                         onFailure()
                         return
                     }

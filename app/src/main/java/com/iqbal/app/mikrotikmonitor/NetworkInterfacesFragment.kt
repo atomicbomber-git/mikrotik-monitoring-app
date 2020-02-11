@@ -1,5 +1,6 @@
 package com.iqbal.app.mikrotikmonitor
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +18,29 @@ class NetworkInterfacesFragment : AppFragment() {
     override fun getLayout() = R.layout.fragment_network_interface
     val networkInterfaceList = ArrayList<NetworkInterface>()
     val adapter = NetworkInterfaceListAdapter(networkInterfaceList)
+    private lateinit var apiToken: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Common.getApiToken().let { apiToken ->
+            if (apiToken === null) {
+                goToLoginActivity()
+                return
+            }
+
+            this.apiToken = apiToken
+        }
+
         this.swipeRefreshLayout.setOnRefreshListener {
             loadData()
         }
 
         setUpInterfaceRecyclerView()
         loadData()
+    }
+
+    private fun goToLoginActivity() {
+        startActivity(Intent(Common.appContext, LoginActivity::class.java))
+        activity?.finish()
     }
 
     private fun loadDataFinished() {
@@ -42,7 +58,7 @@ class NetworkInterfacesFragment : AppFragment() {
         networkInterfaceList.clear()
         adapter.notifyDataSetChanged()
 
-        HttpService.instance.getNetworkInterfaces(Config.PRIMARY_ROUTER_ID)
+        HttpService.instance.getNetworkInterfaces(Config.PRIMARY_ROUTER_ID, this.apiToken)
             .enqueue(object : Callback<List<NetworkInterface>> {
                 override fun onFailure(call: Call<List<NetworkInterface>>, t: Throwable) {
                     loadDataFinished()
@@ -55,9 +71,14 @@ class NetworkInterfacesFragment : AppFragment() {
                     response: Response<List<NetworkInterface>>
                 ) {
                     loadDataFinished()
-                    if (response.code() != 200 && response.body() === null) {
-                        Toast.makeText(context, response.message(), Toast.LENGTH_LONG)
-                            .show()
+
+                    if (response.code() == 401) {
+                        goToLoginActivity()
+                        return
+                    }
+
+                    if (!response.isSuccessful && response.body() === null) {
+                        Toast.makeText(context, response.message(), Toast.LENGTH_LONG).show()
                         return
                     }
 
@@ -108,12 +129,10 @@ class NetworkInterfacesFragment : AppFragment() {
             }
 
             holder.itemView.button_toggle_disabled.setOnClickListener {
-                toggleNetworkInterface(networkInterface.id) {
-
-                    Toast.makeText(activity, it.id + " " + it.disabled, Toast.LENGTH_SHORT)
+                toggleNetworkInterface(networkInterface.id) { networkInterface ->
+                    Toast.makeText(activity, getString(R.string.ACTION_SUCCESS), Toast.LENGTH_SHORT)
                         .show()
-
-                    dataset[position] = it
+                    dataset[position] = networkInterface
                     notifyDataSetChanged()
                 }
             }
@@ -123,24 +142,30 @@ class NetworkInterfacesFragment : AppFragment() {
             networkInterfaceId: String,
             onSuccess: (networkInterface: NetworkInterface) -> Unit
         ) {
+            startRefreshing()
+
             HttpService.instance.toggleNetworkInterface(
                 Config.PRIMARY_ROUTER_ID,
-                networkInterfaceId
+                networkInterfaceId,
+                this@NetworkInterfacesFragment.apiToken
             )
                 .enqueue(object : Callback<NetworkInterface> {
                     override fun onFailure(call: Call<NetworkInterface>, t: Throwable) {
+                        stopRefreshing()
+
                         Toast.makeText(
                             activity,
                             getString(R.string.connection_problem),
                             Toast.LENGTH_SHORT
-                        )
-                            .show()
+                        ).show()
                     }
 
                     override fun onResponse(
                         call: Call<NetworkInterface>,
                         response: Response<NetworkInterface>
                     ) {
+                        stopRefreshing()
+
                         response.body()?.let {
                             onSuccess(it)
                         }
@@ -150,13 +175,20 @@ class NetworkInterfacesFragment : AppFragment() {
                                 activity,
                                 getString(R.string.connection_problem),
                                 Toast.LENGTH_SHORT
-                            )
-                                .show()
+                            ).show()
                         }
                     }
                 })
         }
 
         override fun getItemCount() = dataset.size
+    }
+
+    private fun stopRefreshing() {
+        this@NetworkInterfacesFragment.swipeRefreshLayout?.isRefreshing = false
+    }
+
+    private fun startRefreshing() {
+        this@NetworkInterfacesFragment.swipeRefreshLayout?.isRefreshing = true
     }
 }
