@@ -14,6 +14,11 @@ enum class Feature {
         override fun fragment() = NetworkInterfacesFragment()
     },
 
+    TRAFFIC {
+        override fun tabName() = "Traffic"
+        override fun fragment() = RouterTrafficFragment()
+    },
+
     LOGS {
         override fun tabName() = "Router Log"
         override fun fragment() = RouterLogFragment()

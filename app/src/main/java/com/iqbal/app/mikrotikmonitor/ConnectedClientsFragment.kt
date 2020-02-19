@@ -93,7 +93,7 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
                     view.network_interface.text = connectedClient.network_interface
                     view.mac_address.text = connectedClient.mac_address
                     view.access_point.text = connectedClient.ap
-                    view.bandwith_usage.text = Formatter.formatFileSize(Common.appContext, connectedClient.hw_frame_bytes.replace(",", ".").toFloat().roundToLong() )
+                    view.bandwith_usage.text = Formatter.formatFileSize(Common.appContext, connectedClient.hw_frame_bytes.replace(",", ".").toFloat().roundToLong())
 
                     // Handle ban button click action
                     view.banConnectedClientButton.setOnClickListener {

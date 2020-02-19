@@ -101,6 +101,22 @@ data class NetworkRouter(
     val updated_at: String = ""
 )
 
+data class RouterTrafficData (
+    val rx_packets_per_second: Int = -1,
+    val rx_bits_per_second: Int = -1,
+    val fp_rx_packets_per_second: Int = -1,
+    val fp_rx_bits_per_second: Int = -1,
+    val rx_drops_per_second: Int = -1,
+    val rx_errors_per_second: Int = -1,
+    val tx_packets_per_second: Int = -1,
+    val tx_bits_per_second: Int = -1,
+    val fp_tx_packets_per_second: Int = -1,
+    val fp_tx_bits_per_second: Int = -1,
+    val tx_drops_per_second: Int = -1,
+    val tx_queue_drops_per_second: Int = -1,
+    val tx_errors_per_second: Int = -1
+)
+
 data class CommandResponse(
     var status: String?,
     var message: String?
@@ -144,6 +160,11 @@ interface MikrotikApiService {
 
     @GET("${API_ROOT_PATH}/user_log")
     fun getUserLogs(): Call<UserLogIndexResponse>
+
+    @GET("${API_ROOT_PATH}/router_traffic/{router}/show")
+    fun getRouterTrafficData(
+        @Path("router") router_id: Int
+    ): Call<RouterTrafficData>
 
     @FormUrlEncoded
     @PUT("${API_ROOT_PATH}/router/{router}")
