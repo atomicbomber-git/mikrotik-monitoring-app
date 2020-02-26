@@ -80,8 +80,10 @@ class RouterTrafficFragment : AppFragment() {
                 }
 
                 private fun fail() {
-                    Toast.makeText(activity, "Gagal menghubungi server", Toast.LENGTH_SHORT)
-                        .show()
+                    activity?.let {
+                        Toast.makeText(it, "Gagal menghubungi server", Toast.LENGTH_SHORT)
+                            .show()
+                    }
 
                     onLoadFinish()
                 }
