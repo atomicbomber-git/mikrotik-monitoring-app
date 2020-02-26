@@ -113,9 +113,6 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
 
                     // Handle ban button click action
                     view.banConnectedClientButton.setOnClickListener {
-
-                        Log.d("RESPONSE_DEBUG", "Experiment")
-
                         HttpService.instance.createAccessListItem(Config.PRIMARY_ROUTER_ID, AccessListItem(
                             mac_address = connectedClient.mac_address,
                             authentication = "no",
@@ -123,7 +120,6 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
                         ))
                             .enqueue(object: Callback<CommandResponse> {
                                 override fun onFailure(call: Call<CommandResponse>, t: Throwable) {
-                                    Log.d("RESPONSE_DEBUG", t.message)
                                 }
 
                                 override fun onResponse(
@@ -139,8 +135,8 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
                                 }
 
                                 private fun fail(message: String? = Common.appContext.getString(R.string.ACTION_FAILED)) {
-                                    Toast.makeText(Common.appContext, message, Toast.LENGTH_SHORT)
-                                        .show()
+                                        Toast.makeText(Common.appContext, message, Toast.LENGTH_SHORT)
+                                            .show()
                                 }
                             })
                     }
