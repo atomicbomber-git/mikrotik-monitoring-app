@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_connected_clients.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.math.roundToLong
 
 interface connectedClientBanListener {
@@ -24,6 +26,8 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
     private val connectedClientList: ArrayList<ConnectedClient> = ArrayList()
     private val adapter: ConnectedClientListAdapter = ConnectedClientListAdapter(connectedClientList, this)
+    private var isLoading: Boolean = false
+
 
     override fun getLayout() = R.layout.fragment_connected_clients
 
@@ -33,6 +37,9 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         connected_client_index_swipe_refresh_layout.setOnRefreshListener {
+            connected_client_index_swipe_refresh_layout?.apply {
+                isRefreshing = true
+            }
             this.loadData()
         }
 
@@ -42,12 +49,19 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
         }
 
         loadData()
+
+        val period: Long = 1000
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                loadData()
+            }
+        }, 0, period)
     }
 
     private fun loadData() {
-        connected_client_index_swipe_refresh_layout?.apply {
-            isRefreshing = true
-        }
+        if (isLoading) { return }
+        isLoading = true
+
 
         HttpService.instance.getConnectedClients(Config.PRIMARY_ROUTER_ID)
             .enqueue(object: Callback<List<ConnectedClient>> {
@@ -70,6 +84,8 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
     }
 
     private fun onLoadingFinished() {
+        isLoading = false
+
         connected_client_index_swipe_refresh_layout?.apply {
             isRefreshing = false
         }

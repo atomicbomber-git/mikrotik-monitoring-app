@@ -17,14 +17,26 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.math.roundToLong
+import java.util.TimerTask
+import java.util.Timer
+
+
 
 class RouterTrafficFragment : AppFragment() {
     override fun getLayout(): Int = R.layout.fragment_router_traffic
+    private var isLoading: Boolean = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loadData()
         setUpView()
+
+        val period: Long = 1000
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                loadData()
+            }
+        }, 0, period)
     }
 
     private fun setUpView() {
@@ -35,9 +47,16 @@ class RouterTrafficFragment : AppFragment() {
 
     private fun onLoadFinish() {
         this.swipeRefreshLayout?.isRefreshing = false
+        this.isLoading = false
     }
 
     private fun loadData() {
+        if (isLoading) {
+            return
+        }
+
+        this.isLoading = true
+
         HttpService.instance.getRouterTrafficData(Config.PRIMARY_ROUTER_ID)
             .enqueue(object : Callback<RouterTrafficData> {
                 override fun onFailure(call: Call<RouterTrafficData>, t: Throwable) {
