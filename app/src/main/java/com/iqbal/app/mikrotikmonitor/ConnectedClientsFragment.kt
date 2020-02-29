@@ -108,8 +108,8 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
                     view.mac_address.text = connectedClient.mac_address
                     view.access_point.text = connectedClient.ap
                     view.bandwidth_usage.text = humanDataSize(connectedClient.hw_frame_bytes.replace(",", ".").toFloat().roundToLong())
-                    view.download_speed.text = humanDataSize(connectedClient.rx_rate.replace(",", ".").toFloat().roundToLong())
-                    view.upload_speed.text = humanDataSize(connectedClient.rx_rate.replace(",", ".").toFloat().roundToLong())
+                    view.download_speed.text = connectedClient.rx_rate
+                    view.upload_speed.text = connectedClient.tx_rate
 
                     // Handle ban button click action
                     view.banConnectedClientButton.setOnClickListener {
