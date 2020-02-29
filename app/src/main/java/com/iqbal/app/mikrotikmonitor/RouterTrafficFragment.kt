@@ -2,24 +2,14 @@ package com.iqbal.app.mikrotikmonitor
 
 import android.os.Bundle
 import android.text.format.Formatter
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_router_traffic.*
-import kotlinx.android.synthetic.main.fragment_user_log.*
 import kotlinx.android.synthetic.main.fragment_user_log.swipeRefreshLayout
-import kotlinx.android.synthetic.main.user_log_item.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.math.roundToLong
-import java.util.TimerTask
-import java.util.Timer
-
+import java.util.*
 
 
 class RouterTrafficFragment : AppFragment() {

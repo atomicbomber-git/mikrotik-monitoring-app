@@ -44,7 +44,7 @@
 
                 <TextView
                         android:textStyle="bold"
-                        android:text="Interface"
+                        android:text="@string/network_interface"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -63,7 +63,7 @@
 
                 <TextView
                         android:textStyle="bold"
-                        android:text="MAC Address"
+                        android:text="@string/mac_address"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -82,7 +82,7 @@
 
                 <TextView
                         android:textStyle="bold"
-                        android:text="Access Point"
+                        android:text="@string/access_point"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
@@ -101,13 +101,51 @@
 
                 <TextView
                         android:textStyle="bold"
-                        android:text="Bandwith Usage"
+                        android:text="@string/bandwidth_usage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
 
                 <TextView
-                        android:id="@+id/bandwith_usage"
+                        android:id="@+id/bandwidth_usage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:textStyle="bold"
+                        android:text="@string/download_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                <TextView
+                        android:id="@+id/download_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+            </LinearLayout>
+
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:textStyle="bold"
+                        android:text="@string/upload_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        />
+
+                <TextView
+                        android:id="@+id/upload_speed"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         />
