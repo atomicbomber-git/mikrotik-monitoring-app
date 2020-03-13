@@ -218,12 +218,23 @@ interface MikrotikApiService {
     fun getConnectedClients(@Path("routerId") routerId: Int): Call<List<ConnectedClient>>
 
     @GET("/api/router/{routerId}/wireless/access_list/index")
-    fun getAccessList(@Path("routerId") routerId: Int): Call<List<AccessListItem>>
+    fun getAccessList(
+        @Path("routerId") routerId: Int,
+        @Query("api_token") apiToken: String = ""
+    ): Call<List<AccessListItem>>
 
     @POST("/api/router/{routerId}/wireless/access_list/create")
-    fun createAccessListItem(@Path("routerId") routerId: Int, @Body accessListItem: AccessListItem): Call<CommandResponse>
+    fun createAccessListItem(
+        @Path("routerId") routerId: Int,
+        @Body accessListItem: AccessListItem,
+        @Query("api_token") apiToken: String = ""
+    ): Call<CommandResponse>
 
     @FormUrlEncoded
     @POST("/api/router/{routerId}/wireless/access_list/delete")
-    fun deleteAccessListItem(@Path("routerId") routerId: Int, @Field("id") id: String): Call<CommandResponse>
+    fun deleteAccessListItem(
+        @Path("routerId") routerId: Int,
+        @Field("id") id: String,
+        @Query("api_token") apiToken: String = ""
+    ): Call<CommandResponse>
 }

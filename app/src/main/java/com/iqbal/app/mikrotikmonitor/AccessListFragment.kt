@@ -1,5 +1,6 @@
 package com.iqbal.app.mikrotikmonitor
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,21 +18,41 @@ interface accessListItemDeleteListener {
     fun onAccessListItemDelete()
 }
 
-class AccessListFragment : AppFragment(), accessListItemDeleteListener {
+class AccessListFragment : AppFragment(), accessListItemDeleteListener, CredentialProvider {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
     private val accessList: ArrayList<AccessListItem> = ArrayList()
     private val adapter: AccessListFragment.AccessListAdapter =
-        AccessListFragment.AccessListAdapter(accessList, this)
+        AccessListFragment.AccessListAdapter(accessList, this, this)
+    lateinit var apiToken: String
+
 
     override fun onAccessListItemDelete() {
         loadData()
+    }
+
+    override fun getToken(): String {
+        return this.apiToken
     }
 
     override fun getLayout(): Int {
         return R.layout.fragment_access_list
     }
 
+    private fun goToLoginActivity() {
+        startActivity(Intent(Common.appContext, LoginActivity::class.java))
+        activity?.finish()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Common.getApiToken().let { apiToken ->
+            if (apiToken === null) {
+                goToLoginActivity()
+                return
+            }
+
+            this.apiToken = apiToken
+        }
+
         swipe_refresh_layout.setOnRefreshListener {
             loadData()
         }
@@ -56,7 +77,7 @@ class AccessListFragment : AppFragment(), accessListItemDeleteListener {
             isRefreshing = true
         }
 
-        HttpService.instance.getAccessList(Config.PRIMARY_ROUTER_ID)
+        HttpService.instance.getAccessList(Config.PRIMARY_ROUTER_ID, this.apiToken)
             .enqueue(object : Callback<List<AccessListItem>> {
                 override fun onFailure(call: Call<List<AccessListItem>>, t: Throwable) {
                     loadDataFinished()
@@ -89,7 +110,8 @@ class AccessListFragment : AppFragment(), accessListItemDeleteListener {
 
     class AccessListAdapter(
         private val accessList: ArrayList<AccessListItem>,
-        private val accessListItemDeleteListener: accessListItemDeleteListener
+        private val accessListItemDeleteListener: accessListItemDeleteListener,
+        private val credentialProvider: CredentialProvider
     ) :
         RecyclerView.Adapter<AccessListAdapter.ViewHolder>() {
 
@@ -116,7 +138,8 @@ class AccessListFragment : AppFragment(), accessListItemDeleteListener {
 
                         HttpService.instance.deleteAccessListItem(
                             Config.PRIMARY_ROUTER_ID,
-                            accessListItem.id
+                            accessListItem.id,
+                            credentialProvider.getToken()
                         )
                             .enqueue(object : Callback<CommandResponse> {
                                 override fun onFailure(call: Call<CommandResponse>, t: Throwable) {

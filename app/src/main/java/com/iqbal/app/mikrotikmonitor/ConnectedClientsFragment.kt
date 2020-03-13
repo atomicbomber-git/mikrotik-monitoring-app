@@ -1,7 +1,9 @@
 package com.iqbal.app.mikrotikmonitor
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.format.Formatter
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,12 +23,20 @@ interface connectedClientBanListener {
     public fun onConnectedClientBan()
 }
 
-class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
+class ConnectedClientsFragment: AppFragment(), connectedClientBanListener, CredentialProvider {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
     private val connectedClientList: ArrayList<ConnectedClient> = ArrayList()
-    private val adapter: ConnectedClientListAdapter = ConnectedClientListAdapter(connectedClientList, this)
+    private val adapter: ConnectedClientListAdapter = ConnectedClientListAdapter(
+        connectedClientList,
+        this,
+        this
+    )
     private var isLoading: Boolean = false
+    lateinit var apiToken: String
 
+    override fun getToken(): String {
+        return this.apiToken
+    }
 
     override fun getLayout() = R.layout.fragment_connected_clients
 
@@ -34,7 +44,21 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
         loadData()
     }
 
+    private fun goToLoginActivity() {
+        startActivity(Intent(Common.appContext, LoginActivity::class.java))
+        activity?.finish()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Common.getApiToken().let { apiToken ->
+            if (apiToken === null) {
+                goToLoginActivity()
+                return
+            }
+
+            this.apiToken = apiToken
+        }
+
         connected_client_index_swipe_refresh_layout.setOnRefreshListener {
             connected_client_index_swipe_refresh_layout?.apply {
                 isRefreshing = true
@@ -89,7 +113,11 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
         }
     }
 
-    class ConnectedClientListAdapter(private val connectedClients: ArrayList<ConnectedClient>, private val connectedClientBanListener: connectedClientBanListener):
+    class ConnectedClientListAdapter(
+        private val connectedClients: ArrayList<ConnectedClient>,
+        private val connectedClientBanListener: connectedClientBanListener,
+        private val credentialsProvider: CredentialProvider
+    ):
         RecyclerView.Adapter<ConnectedClientListAdapter.ViewHolder>() {
         
         class ViewHolder(val view: View): RecyclerView.ViewHolder(view)
@@ -113,11 +141,13 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
 
                     // Handle ban button click action
                     view.banConnectedClientButton.setOnClickListener {
-                        HttpService.instance.createAccessListItem(Config.PRIMARY_ROUTER_ID, AccessListItem(
-                            mac_address = connectedClient.mac_address,
-                            authentication = "no",
-                            network_interface = connectedClient.network_interface
-                        ))
+                        HttpService.instance.createAccessListItem(
+                            Config.PRIMARY_ROUTER_ID,
+                            AccessListItem(
+                                mac_address = connectedClient.mac_address,
+                                network_interface = connectedClient.network_interface,
+                                authentication = "no"
+                            ), credentialsProvider.getToken())
                             .enqueue(object: Callback<CommandResponse> {
                                 override fun onFailure(call: Call<CommandResponse>, t: Throwable) {
                                 }
@@ -150,4 +180,8 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener {
                 bytes
             )
     }
+}
+
+interface CredentialProvider {
+    fun getToken(): String
 }
