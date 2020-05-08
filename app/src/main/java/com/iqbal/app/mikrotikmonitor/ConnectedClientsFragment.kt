@@ -139,39 +139,48 @@ class ConnectedClientsFragment: AppFragment(), connectedClientBanListener, Crede
                     view.download_speed.text = connectedClient.rx_rate
                     view.upload_speed.text = connectedClient.tx_rate
 
+                    if (connectedClient.txRateMbps() > Common.getSpeedLimitMbps()) {
+                        sendBanRequest(connectedClient)
+                    }
+
                     // Handle ban button click action
                     view.banConnectedClientButton.setOnClickListener {
-                        HttpService.instance.createAccessListItem(
-                            Config.PRIMARY_ROUTER_ID,
-                            AccessListItem(
-                                mac_address = connectedClient.mac_address,
-                                network_interface = connectedClient.network_interface,
-                                authentication = "no"
-                            ), credentialsProvider.getToken())
-                            .enqueue(object: Callback<CommandResponse> {
-                                override fun onFailure(call: Call<CommandResponse>, t: Throwable) {
-                                }
-
-                                override fun onResponse(
-                                    call: Call<CommandResponse>,
-                                    response: Response<CommandResponse>
-                                ) {
-                                    if (!response.isSuccessful) {
-                                        fail(response.message())
-                                        return
-                                    }
-
-                                    connectedClientBanListener.onConnectedClientBan()
-                                }
-
-                                private fun fail(message: String? = Common.appContext.getString(R.string.ACTION_FAILED)) {
-                                        Toast.makeText(Common.appContext, message, Toast.LENGTH_SHORT)
-                                            .show()
-                                }
-                            })
+                        sendBanRequest(connectedClient)
                     }
                 }
             }
+        }
+
+        private fun sendBanRequest(connectedClient: ConnectedClient) {
+            HttpService.instance.createAccessListItem(
+                Config.PRIMARY_ROUTER_ID,
+                AccessListItem(
+                    mac_address = connectedClient.mac_address,
+                    network_interface = connectedClient.network_interface,
+                    authentication = "no"
+                ), credentialsProvider.getToken()
+            )
+                .enqueue(object : Callback<CommandResponse> {
+                    override fun onFailure(call: Call<CommandResponse>, t: Throwable) {
+                    }
+
+                    override fun onResponse(
+                        call: Call<CommandResponse>,
+                        response: Response<CommandResponse>
+                    ) {
+                        if (!response.isSuccessful) {
+                            fail(response.message())
+                            return
+                        }
+
+                        connectedClientBanListener.onConnectedClientBan()
+                    }
+
+                    private fun fail(message: String? = Common.appContext.getString(R.string.ACTION_FAILED)) {
+                        Toast.makeText(Common.appContext, message, Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                })
         }
 
         private fun humanDataSize(bytes: Long) =

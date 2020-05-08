@@ -59,6 +59,10 @@ object Common {
         return getPrimarySharedPreferences().getString(Config.SHARED_PREF_PRIMARY_KEY_API_TOKEN, null)
     }
 
+    fun getSpeedLimitMbps(): Double {
+        return getPrimarySharedPreferences().getFloat(Config.SHARED_PREF_SPEED_LIMIT_MBPS, 2.0F).toDouble()
+    }
+
     fun getCurrentServerHost(): String? {
         return getPrimarySharedPreferences().getString(
             Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST

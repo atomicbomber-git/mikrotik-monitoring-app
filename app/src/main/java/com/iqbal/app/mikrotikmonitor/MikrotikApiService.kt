@@ -68,7 +68,17 @@ data class ConnectedClient(
     val management_protection: String = "",
     val wmm_enabled: String = "",
     val tx_rate_set: String = ""
-)
+) {
+
+    fun txRateMbps(): Double {
+        val index = this.rx_rate.indexOf("Mbps")
+        if (index != -1) {
+            return this.rx_rate.slice(IntRange(0, index - 1))
+                .toDouble()
+        }
+        return 0.0
+    }
+}
 
 data class AccessListItem(
     val id: String = "",

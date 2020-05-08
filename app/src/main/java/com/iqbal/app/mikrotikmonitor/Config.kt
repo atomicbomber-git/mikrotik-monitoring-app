@@ -6,6 +6,7 @@ class Config {
         const val SHARED_PREF_PRIMARY_ID = "PRIMARY"
         const val SHARED_PREF_PRIMARY_KEY_API_TOKEN = "API_TOKEN"
         const val SHARED_PREF_PRIMARY_KEY_SERVER_HOST = "SERVER_HOST"
+        const val SHARED_PREF_SPEED_LIMIT_MBPS = "SPEED_LIMIT_MBPS"
         const val SERVER_DEFAULT_HOST = "http://localhost:8000"
     }
 }
