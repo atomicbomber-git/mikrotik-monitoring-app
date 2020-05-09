@@ -20,6 +20,16 @@ class SettingsFragment: AppFragment() {
             val currentServerAddress: String? = sharedPref.getString(Config.SHARED_PREF_PRIMARY_KEY_SERVER_HOST, null)
             edit_text_server_address.setText(currentServerAddress)
 
+            val currentSpeedLimit: Double = Common.getSpeedLimitMbps()
+            edit_text_speed_limit.setText(currentSpeedLimit.toString())
+
+            button_save_speed_limit.setOnClickListener {
+                with(Common.getPrimarySharedPreferences().edit()) {
+                    putFloat(Config.SHARED_PREF_SPEED_LIMIT_MBPS, edit_text_speed_limit.text.toString().toFloat())
+                    commit()
+                }
+            }
+
             button_save_settings.setOnClickListener {
                 val newServerAddress = edit_text_server_address.text.toString()
 

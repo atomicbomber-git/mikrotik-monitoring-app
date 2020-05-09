@@ -18,11 +18,11 @@ interface accessListItemDeleteListener {
     fun onAccessListItemDelete()
 }
 
-class AccessListFragment : AppFragment(), accessListItemDeleteListener, CredentialProvider {
+class BanListFragment : AppFragment(), accessListItemDeleteListener, CredentialProvider {
     private val layoutManager: RecyclerView.LayoutManager = LinearLayoutManager(context)
     private val accessList: ArrayList<AccessListItem> = ArrayList()
-    private val adapter: AccessListFragment.AccessListAdapter =
-        AccessListFragment.AccessListAdapter(accessList, this, this)
+    private val adapter: BanListFragment.AccessListAdapter =
+        BanListFragment.AccessListAdapter(accessList, this, this)
     lateinit var apiToken: String
 
 

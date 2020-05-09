@@ -34,9 +34,9 @@ enum class Feature {
         override fun fragment() = ConnectedClientsFragment()
     },
 
-    ACCESS_LIST {
-        override fun tabName() = "Access List"
-        override fun fragment() = AccessListFragment()
+    BAN_LIST {
+        override fun tabName() = "Ban List"
+        override fun fragment() = BanListFragment()
     },
 
     SETTINGS {

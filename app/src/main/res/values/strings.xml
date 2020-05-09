@@ -34,4 +34,8 @@
     <string name="access_point">Access Point</string>
     <string name="mac_address">MAC Address</string>
     <string name="network_interface">Interface</string>
+    <string name="hint_edit_speed_limit">Speed Limit</string>
+    <string name="text_settings_speed_limit">Speed Limit</string>
+    <string name="button_save_speed_limit">Save Speed Limit</string>
+    <string name="button_save_server_url">Save Server URL</string>
 </resources>
